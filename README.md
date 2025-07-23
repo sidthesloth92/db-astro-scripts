@@ -10,13 +10,13 @@ This script organizes FITS image files that come out of ASIAIR into a structured
 
 When using a filter wheel, ASIAIR will automatically add the filter name to the file name. Just make sure to turn on adding the camera model, gain and temperature to the file name in the settings.
 
-![Screenshot of ASIAIR camera setting using the filter wheel](images/with_filter_wheel.png "Application UI")
+<img src="images/with_filter_wheel.png" alt="Screenshot of ASIAIR camera setting using the filter wheel" width="500" />
 
 ### When not using a Filter Wheel
 
 When not using a filter wheel, ASIAIR will not add filter name to the file name. Instead, you can go to camera settings and then add a suffix `_f_<filtername>`. This will allow the script to detect the filter used. Also, make sure to turn on adding the camera model, gain and temperature to the file name in the settings.
 
-![Screenshot of ASIAIR camera setting when not using the filter wheel](images/without_filter_wheel.png "Application UI")
+<img src="images/without_filter_wheel.png" alt="Screenshot of ASIAIR camera setting when not using the filter wheel" width="500" />
 
 ## Notes
 
