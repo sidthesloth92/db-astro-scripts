@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timedelta
 import shutil
 import sys
+from astropy.io import fits
 
 # This script organizes FITS image files from a specified directory into a structured folder hierarchy
 # based on camera model, target name, frame type, date, and filter. It parses filenames to extract metadata,
@@ -16,11 +17,21 @@ if len(sys.argv) < 2:
 # Path to the directory containing the FITS files to be organized
 directory_path = sys.argv[1]
 
-# Iterate over each file in the directory
-for filename in os.listdir(directory_path):
+# Recursively collect all FITS files in the directory and subdirectories
+fits_files = []
+for root, _, files in os.walk(directory_path):
+  for file in files:
+    if file.endswith('.fit') and not file.startswith('.'):
+      fits_files.append(os.path.join(root, file))
 
-  # Ignore hidden files (those starting with '.')
-  if not filename.startswith('.'):
+
+# Iterate over each file in the directory
+for filepath in fits_files:
+  filename = os.path.basename(filepath)
+
+
+  # Ignore hidden files (those starting with '.') and ensure they have the correct extension
+  if not filename.startswith('.') and filename.endswith('.fit'):
 
     # Split the filename into parts using underscore as the delimiter
     parts = filename.split('_')
@@ -81,9 +92,15 @@ for filename in os.listdir(directory_path):
     os.makedirs(date_dir, exist_ok=True)
 
     # Copy the file to the appropriate directory. Do not overwrite if it already exists.
-    src_path = os.path.join(directory_path, filename)
+    src_path = os.path.join(filepath)
     dst_path = os.path.join(date_dir, filename)
     if not os.path.exists(dst_path):
       shutil.copy2(src_path, dst_path)
+
+      # If the file is not mono, update the FITS header with the filter name
+      if not is_mono:
+        with fits.open(dst_path, mode='update') as hdul:
+          hdul[0].header['FILTER'] = filter
+          hdul.flush()
 
       
